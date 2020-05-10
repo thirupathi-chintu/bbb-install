@@ -751,9 +751,9 @@ install_ssl() {
 
   if [ ! -f /etc/letsencrypt/live/$HOST/fullchain.pem ]; then
     rm -f /tmp/bigbluebutton.bak
-    if ! grep -q $HOST /etc/nginx/sites-available/bigbluebutton; then  # make sure we can do the challenge
-      cp /etc/nginx/sites-available/bigbluebutton /tmp/bigbluebutton.bak
-      cat <<HERE > /etc/nginx/sites-available/bigbluebutton
+    if ! grep -q $HOST /etc/nginx/plesk.conf.d/vhosts/class.namastegurus.com.conf; then  # make sure we can do the challenge
+      cp /etc/nginx/plesk.conf.d/vhosts/class.namastegurus.com.conf /tmp/bigbluebutton.bak
+      cat <<HERE > /etc/nginx/plesk.conf.d/vhosts/class.namastegurus.com.conf
 server {
   listen 80;
   listen [::]:80;
@@ -782,7 +782,7 @@ HERE
     if [ -z "$PROVIDED_CERTIFICATE" ]; then
       if ! certbot --email $EMAIL --agree-tos --rsa-key-size 4096 -w /var/www/bigbluebutton-default/ \
            -d $HOST --deploy-hook "systemctl restart nginx" $LETS_ENCRYPT_OPTIONS certonly; then
-        cp /tmp/bigbluebutton.bak /etc/nginx/sites-available/bigbluebutton
+        cp /tmp/bigbluebutton.bak /etc/nginx/plesk.conf.d/vhosts/class.namastegurus.com.conf
         systemctl restart nginx
         err "Let's Encrypt SSL request for $HOST did not succeed - exiting"
       fi
@@ -793,7 +793,7 @@ HERE
     fi
   fi
 
-  cat <<HERE > /etc/nginx/sites-available/bigbluebutton
+  cat <<HERE > /etc/nginx/plesk.conf.d/vhosts/class.namastegurus.com.conf
 server {
   listen 80;
   listen [::]:80;
